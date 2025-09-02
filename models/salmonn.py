@@ -106,12 +106,12 @@ class SALMONN(nn.Module):
         self.end_sym = end_sym
         self.low_resource = low_resource
 
-        logging.info('Loading LLaMA Tokenizer')
+        logging.info('Loading Gemma3 Tokenizer')
         self.llama_tokenizer = GemmaTokenizer.from_pretrained(llama_path, use_fast=False)
         self.llama_tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.llama_tokenizer.padding_side = "right"
 
-        logging.info('Loading LLaMA Model')
+        logging.info('Loading Gemma3 Model')
         if self.low_resource:
             self.llama_model = Gemma3ForCausalLM.from_pretrained(
                 llama_path,
@@ -137,6 +137,7 @@ class SALMONN(nn.Module):
                 r=lora_rank, 
                 lora_alpha=lora_alpha, 
                 lora_dropout=lora_dropout,
+                target_modules=["q_proj", "v_proj", "k_proj", "o_proj"],  # Example target modules
             )
             self.llama_model = get_peft_model(self.llama_model, self.peft_config)
             self.llama_model.print_trainable_parameters()
