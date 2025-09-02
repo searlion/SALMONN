@@ -112,3 +112,5 @@ For the following errors:
 *  Missing `libcublas.so.11`: First `sudo find /home/lewis/miniconda3/ -name '*cublas.so.11*'`. Then `export LD_LIBRARY_PATH="/home/lewis/miniconda3/lib:$LD_LIBRARY_PATH"
 `
 *  Missing `libstdc++.so.6` specifically `GLIBCXX_3.4.32`: `conda install -c conda-forge libstdcxx-ng`. Also remember to upgrade torchaudio to 2.3.0.
+
+Note that BEATS can simply point to the `*.pt` file itself. No need to extract it.

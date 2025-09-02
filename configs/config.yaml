@@ -18,7 +18,7 @@ model:
   whisper_path: "/home/lewis/github/whisper-small"
   beats_path: "/home/lewis/github/SALMONN_support/BEATs_iter3_plus_AS2M_finetuned_on_AS2M_cpt2.pt"
 
-  ckpt: "model ckpt" # if not "", load model from ckpt for training or evaluation
+  ckpt: "" # if not "", load model from ckpt for training or evaluation
 
   freeze_whisper: True
   freeze_beats: True
@@ -48,11 +48,11 @@ model:
   end_sym: "</s>"
 
 datasets:
-  train_ann_path: "path to train data"
-  valid_ann_path: "path to valid data"
-  test_ann_path: "path to test data"
+  train_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/salmonn_stage1_data.json"
+  valid_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/salmonn_stage2_data.json"
+  test_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/salmonn_stage3_data.json"
 
-  whisper_path: "path to whisper model"
+  whisper_path: "/home/lewis/github/whisper-small"
 
 run:
   # log & settings
