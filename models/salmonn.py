@@ -128,7 +128,7 @@ class SALMONN(nn.Module):
         self.llama_model.resize_token_embeddings(len(self.llama_tokenizer))
         for name, param in self.llama_model.named_parameters():
             param.requires_grad = False
-        logging.info('Loading LLaMA Done')
+        logging.info('Loading Gemma3 Done')
 
         if self.lora:
             self.peft_config = LoraConfig(
