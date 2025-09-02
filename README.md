@@ -83,3 +83,19 @@ If you find SALMONN useful, please cite the paper:
   url={https://openreview.net/forum?id=14rn7HpKVk}
 }
 ```
+
+### Notes
+
+You need python 3.11 to install the dependencies as specified in the `requirements.txt` file. If you prefer to use `uv` only, you may do the following:
+1. Create a virtual environment with python 3.11
+```shell
+uv venv -python 3.11
+```
+2. Activate the virtual environment
+```shell
+source .venv/bin/activate
+```
+3. Install dependencies
+```shell
+uv pip install -r requirements.txt
+```
