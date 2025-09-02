@@ -98,3 +98,17 @@ source .venv/bin/activate
 ```shell
 uv pip install -r requirements.txt
 ```
+
+## How to change to Gemma 3
+
+We need to upgrade the Transformer library from 4.28.0 to a minimum of 4.50.0 where Gemma 3 is supported.
+
+As a result of upgrading Transformer, I also upgraded torch from 2.0.1 to 2.3.0.
+
+Also upgrade torchaudio from 2.0.1 to 2.3.0.
+
+For the following errors:
+
+*  Missing `libcublas.so.11`: First `sudo find /home/lewis/miniconda3/ -name '*cublas.so.11*'`. Then `export LD_LIBRARY_PATH="/home/lewis/miniconda3/lib:$LD_LIBRARY_PATH"
+`
+*  Missing `libstdc++.so.6` specifically `GLIBCXX_3.4.32`: `conda install -c conda-forge libstdcxx-ng`. Also remember to upgrade torchaudio to 2.3.0.
