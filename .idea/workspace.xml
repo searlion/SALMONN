@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="dd4dbd87-3f4a-4ac3-bd34-08d2f3233e00" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/salmonn.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/salmonn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +92,7 @@
       <option name="presentableId" value="Default" />
       <updated>1756718094422</updated>
       <workItem from="1756718095456" duration="4599000" />
-      <workItem from="1756780428966" duration="12466000" />
+      <workItem from="1756780428966" duration="12937000" />
     </task>
     <servers />
   </component>
