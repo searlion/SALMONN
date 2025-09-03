@@ -1,0 +1,135 @@
+_wandb:
+    value:
+        cli_version: 0.21.3
+        e:
+            c17iz5jpqlgc6zz0kvlt44do0crmocb2:
+                args:
+                    - --cfg-path
+                    - configs/config_with_wandb.yaml
+                codePath: train.py
+                codePathLocal: train.py
+                cpu_count: 6
+                cpu_count_logical: 12
+                cudaVersion: "12.4"
+                disk:
+                    /:
+                        total: "1966736678912"
+                        used: "1688355659776"
+                email: lewis.won@gmail.com
+                executable: /home/lewis/github/SALMONN/.venv/bin/python3
+                git:
+                    commit: 1274e4f49199ddcb15e0de0e3ff4e6f5ebd24254
+                    remote: git@github.com:searlion/SALMONN.git
+                gpu: NVIDIA GeForce RTX 4070 SUPER
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 7168
+                      memoryTotal: "12878610432"
+                      name: NVIDIA GeForce RTX 4070 SUPER
+                      uuid: GPU-b6f75dcc-5ba9-19d8-7989-85cd27c065b7
+                host: lewis-desktop
+                memory:
+                    total: "66476474368"
+                os: Linux-6.14.0-28-generic-x86_64-with-glibc2.39
+                program: /home/lewis/github/SALMONN/train.py
+                python: CPython 3.11.13
+                root: /home/lewis/github/SALMONN
+                startedAt: "2025-09-03T09:58:01.912770Z"
+                writerId: c17iz5jpqlgc6zz0kvlt44do0crmocb2
+        m: []
+        python_version: 3.11.13
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 53
+                - 71
+                - 98
+                - 105
+            "2":
+                - 1
+                - 5
+                - 11
+                - 49
+                - 53
+                - 71
+                - 98
+                - 105
+            "3":
+                - 15
+                - 16
+                - 61
+            "4": 3.11.13
+            "5": 0.21.3
+            "6": 4.50.0
+            "12": 0.21.3
+            "13": linux-x86_64
+datasets:
+    value:
+        test_ann_path: /home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/stage1/test.json
+        train_ann_path: /home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/stage1/train.json
+        valid_ann_path: /home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/stage1/valid.json
+        whisper_path: /home/lewis/github/whisper-small
+model:
+    value:
+        beats_path: /home/lewis/github/SALMONN_support/BEATs_iter3_plus_AS2M_finetuned_on_AS2M_cpt2.pt
+        ckpt: ""
+        end_sym: </s>
+        freeze_beats: true
+        freeze_speech_QFormer: false
+        freeze_speech_llama_proj: false
+        freeze_whisper: true
+        llama_path: /home/lewis/github/gemma3
+        lora: true
+        lora_alpha: 32
+        lora_dropout: 0.1
+        lora_rank: 8
+        max_txt_len: 300
+        multi_prompt: true
+        num_speech_query_token: 1
+        prompt_path: prompts/train_prompt.json
+        prompt_template: |-
+            USER: {}
+            ASSISTANT:
+        second_per_window: 0.333333
+        second_stride: 0.333333
+        speech_llama_proj_model: ""
+        test_prompt_path: prompts/test_prompt.json
+        use_speech_Qformer: true
+        whisper_path: /home/lewis/github/whisper-small
+        window_level_Qformer: true
+run:
+    value:
+        accum_grad_iters: 1
+        amp: false
+        batch_size_eval: 8
+        batch_size_train: 8
+        device: cuda
+        dist_url: env://
+        epoch_based: false
+        evaluate: false
+        iters_per_epoch: 3000
+        log_freq: 5
+        num_workers: 8
+        optims:
+            beta2: 0.999
+            init_lr: 3e-06
+            max_epoch: 30
+            min_lr: 1e-05
+            warmup_start_lr: 1e-06
+            warmup_steps: 3000
+            weight_decay: 0.05
+        output_dir: output directory
+        seed: 42
+        use_distributed: false
+        use_wandb: true
+        wandb_project: salmonn-training
+        wandb_run_name: null
+        wandb_tags:
+            - salmonn
+            - audio-language-model
+            - gemma3
+        world_size: 1

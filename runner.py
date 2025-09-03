@@ -148,6 +148,25 @@ class Runner:
 
             metric_logger.update(loss=loss.item())
             metric_logger.update(lr=self.optimizer.param_groups[0]["lr"])
+            
+            # Log to wandb during training (every log_freq iterations)
+            if self.use_wandb and is_main_process() and (i + 1) % self.config.config.run.log_freq == 0:
+                step = epoch * self.iters_per_epoch + i
+                wandb_metrics = {
+                    "train_loss_step": loss.item(),
+                    "learning_rate": self.optimizer.param_groups[0]["lr"],
+                    "epoch": epoch,
+                    "iteration": i,
+                    "global_step": step
+                }
+                
+                # Add memory usage if CUDA is available
+                if self.cuda_enabled:
+                    wandb_metrics["gpu_memory_allocated_mb"] = torch.cuda.memory_allocated() / (1024 * 1024)
+                    wandb_metrics["gpu_memory_reserved_mb"] = torch.cuda.memory_reserved() / (1024 * 1024)
+                    wandb_metrics["gpu_max_memory_allocated_mb"] = torch.cuda.max_memory_allocated() / (1024 * 1024)
+                
+                self.wandb_log(wandb_metrics, step=step)
 
         metric_logger.synchronize_between_processes()
         logging.info("Averaged stats: " + str(metric_logger.global_avg()))
@@ -391,10 +410,12 @@ class Runner:
         """Log training and test dataset information to wandb."""
         try:
             # Create dataset artifacts and log metadata
+            dataset_stats = {}
+            
             for split_name, dataset in self.datasets.items():
                 # Log dataset size
                 dataset_size = len(dataset)
-                wandb.log({f"dataset_{split_name}_size": dataset_size})
+                dataset_stats[f"dataset_{split_name}_size"] = dataset_size
                 
                 # Sample a few examples for visualization
                 sample_data = []
@@ -408,8 +429,18 @@ class Runner:
                             "text": sample.get("text", ""),
                             "task": sample.get("task", "asr"),
                             "Q": sample.get("Q", ""),
-                            "audio_path": sample.get("id", "")  # Using id as audio path
+                            "audio_path": sample.get("id", ""),  # Using id as audio path
+                            "text_length": len(sample.get("text", "")),
+                            "sample_index": i
                         }
+                        
+                        # Add audio information if available
+                        if "raw_wav" in sample:
+                            sample_info["audio_length_samples"] = len(sample["raw_wav"])
+                        if "spectrogram" in sample:
+                            spec_shape = sample["spectrogram"].shape if hasattr(sample["spectrogram"], 'shape') else "N/A"
+                            sample_info["spectrogram_shape"] = str(spec_shape)
+                            
                         sample_data.append(sample_info)
                     except Exception as e:
                         logging.warning(f"Error sampling {split_name} dataset at index {i}: {e}")
@@ -429,9 +460,12 @@ class Runner:
                             sample["audio_path"]
                         )
                     
-                    wandb.log({f"{split_name}_dataset_samples": table})
+                    dataset_stats[f"{split_name}_dataset_samples"] = table
                 
                 logging.info(f"Logged {len(sample_data)} samples from {split_name} dataset to wandb")
+            
+            # Log all dataset info without step to avoid step conflicts
+            wandb.log(dataset_stats)
                 
         except Exception as e:
             logging.warning(f"Error logging dataset info to wandb: {e}")
