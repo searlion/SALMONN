@@ -93,6 +93,12 @@ class Runner:
 
         self.log_config()
         
+        # initialize separate step counters for wandb
+        self.train_step_counter = 0
+        self.valid_step_counter = 0
+        self.train_epoch_counter = 0
+        self.valid_epoch_counter = 0
+        
         # initialize wandb if enabled
         self.use_wandb = self.config.config.run.get("use_wandb", False)
         if self.use_wandb and is_main_process():
@@ -151,13 +157,13 @@ class Runner:
             
             # Log to wandb during training (every log_freq iterations)
             if self.use_wandb and is_main_process() and (i + 1) % self.config.config.run.log_freq == 0:
-                step = epoch * self.iters_per_epoch + i
                 wandb_metrics = {
-                    "train_loss_step": loss.item(),
+                    "train_steps": self.train_step_counter,
+                    "train_loss": loss.item(),
                     "learning_rate": self.optimizer.param_groups[0]["lr"],
                     "epoch": epoch,
                     "iteration": i,
-                    "global_step": step
+                    "train_global_step": epoch * self.iters_per_epoch + i
                 }
                 
                 # Add memory usage if CUDA is available
@@ -166,7 +172,8 @@ class Runner:
                     wandb_metrics["gpu_memory_reserved_mb"] = torch.cuda.memory_reserved() / (1024 * 1024)
                     wandb_metrics["gpu_max_memory_allocated_mb"] = torch.cuda.max_memory_allocated() / (1024 * 1024)
                 
-                self.wandb_log(wandb_metrics, step=step)
+                self.wandb_log(wandb_metrics)
+                self.train_step_counter += 1
 
         metric_logger.synchronize_between_processes()
         logging.info("Averaged stats: " + str(metric_logger.global_avg()))
@@ -239,18 +246,16 @@ class Runner:
             
             # Log validation loss step-by-step to wandb if enabled
             if self.use_wandb and is_main_process():
-                # Create a proper step number that continues after training steps
                 batch_idx = len(results) - 1
-                # Calculate step that comes after all training steps for this epoch
-                training_steps_so_far = (epoch + 1) * self.iters_per_epoch
-                val_step = training_steps_so_far + 100 + batch_idx  # Offset by 100 to separate from epoch summary
                 val_wandb_metrics = {
+                    "valid_steps": self.valid_step_counter,
                     "valid_loss": loss_value,
                     "epoch": epoch,
-                    "validation_batch": batch_idx
+                    "validation_batch": batch_idx,
+                    "valid_global_step": batch_idx
                 }
-                # Log with step to maintain proper ordering
-                self.wandb_log(val_wandb_metrics, step=val_step)
+                self.wandb_log(val_wandb_metrics)
+                self.valid_step_counter += 1
 
         if is_dist_avail_and_initialized():
             dist.barrier()
@@ -338,12 +343,14 @@ class Runner:
             train_stats = self.train_epoch(cur_epoch)
             self.log_stats(train_stats, split_name="train")
             
-            # Log to wandb
+            # Log epoch summary to wandb with separate epoch counter
             if self.use_wandb and is_main_process():
-                train_global_step = (cur_epoch + 1) * self.iters_per_epoch
                 wandb_train_stats = {f"train_{k}": float(v) for k, v in train_stats.items()}
+                wandb_train_stats["train_epochs"] = self.train_epoch_counter
                 wandb_train_stats["epoch"] = cur_epoch
-                self.wandb_log(wandb_train_stats, step=train_global_step)
+                wandb_train_stats["train_epoch_summary"] = True
+                self.wandb_log(wandb_train_stats)
+                self.train_epoch_counter += 1
 
             # validating phase
             logging.info("Validating Phase")
@@ -360,14 +367,16 @@ class Runner:
                     valid_log.update({"best_epoch": best_epoch})
                     self.log_stats(valid_log, split_name="valid")
                     
-                    # Log validation metrics to wandb
+                    # Log validation epoch summary to wandb with separate epoch counter
                     if self.use_wandb:
-                        valid_global_step = (cur_epoch + 1) * self.iters_per_epoch + 1  # +1 to ensure it's after training
                         wandb_valid_stats = {f"valid_{k}": float(v) if isinstance(v, (int, float)) else v for k, v in valid_log.items()}
+                        wandb_valid_stats["valid_epochs"] = self.valid_epoch_counter
                         wandb_valid_stats["epoch"] = cur_epoch
+                        wandb_valid_stats["valid_epoch_summary"] = True
                         logging.info(f"Debug - valid_log contents: {valid_log}")
                         logging.info(f"Debug - wandb_valid_stats: {wandb_valid_stats}")
-                        self.wandb_log(wandb_valid_stats, step=valid_global_step)
+                        self.wandb_log(wandb_valid_stats)
+                        self.valid_epoch_counter += 1
 
             self.save_checkpoint(cur_epoch, is_best=False)
 
@@ -434,6 +443,22 @@ class Runner:
             config=self.config.to_dict(),
             tags=self.config.config.run.get("wandb_tags", ["salmonn", "audio-language-model"])
         )
+        
+        # Define custom metrics with separate step counters to avoid conflicts
+        wandb.define_metric("train_steps")
+        wandb.define_metric("valid_steps") 
+        wandb.define_metric("train_epochs")
+        wandb.define_metric("valid_epochs")
+        
+        # Define metrics that use the custom step counters
+        wandb.define_metric("train_loss", step_metric="train_steps")
+        wandb.define_metric("learning_rate", step_metric="train_steps")
+        wandb.define_metric("gpu_*", step_metric="train_steps")
+        
+        wandb.define_metric("valid_loss", step_metric="valid_steps")
+        
+        wandb.define_metric("train_*", step_metric="train_epochs")
+        wandb.define_metric("valid_*", step_metric="valid_epochs")
         
         # Log dataset statistics
         self.log_dataset_info()
