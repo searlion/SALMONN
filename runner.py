@@ -11,6 +11,7 @@ import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from tensorboardX import SummaryWriter
+import wandb
 
 from dist_utils import main_process, is_dist_avail_and_initialized, is_main_process, get_rank, get_world_size
 from logger import MetricLogger, SmoothedValue
@@ -66,6 +67,9 @@ class Runner:
         self.train_loader = get_dataloader(datasets["train"], self.config.config.run, is_train=True, use_distributed=self.use_distributed)
         self.valid_loader = get_dataloader(datasets["valid"], self.config.config.run, is_train=False, use_distributed=self.use_distributed)
         self.test_loader = get_dataloader(datasets["test"], self.config.config.run, is_train=False, use_distributed=self.use_distributed)
+        
+        # store datasets for wandb logging
+        self.datasets = datasets
 
         # scaler
         self.use_amp = self.config.config.run.get("amp", False)
@@ -88,6 +92,11 @@ class Runner:
         )
 
         self.log_config()
+        
+        # initialize wandb if enabled
+        self.use_wandb = self.config.config.run.get("use_wandb", False)
+        if self.use_wandb and is_main_process():
+            self.init_wandb()
 
     def unwrap_dist_model(self, model):
         if self.use_distributed:
@@ -278,6 +287,12 @@ class Runner:
             logging.info("Training Phase")
             train_stats = self.train_epoch(cur_epoch)
             self.log_stats(train_stats, split_name="train")
+            
+            # Log to wandb
+            if self.use_wandb and is_main_process():
+                wandb_train_stats = {f"train_{k}": float(v) for k, v in train_stats.items()}
+                wandb_train_stats["epoch"] = cur_epoch
+                self.wandb_log(wandb_train_stats, step=cur_epoch)
 
             # validating phase
             logging.info("Validating Phase")
@@ -293,6 +308,12 @@ class Runner:
 
                     valid_log.update({"best_epoch": best_epoch})
                     self.log_stats(valid_log, split_name="valid")
+                    
+                    # Log validation metrics to wandb
+                    if self.use_wandb:
+                        wandb_valid_stats = {f"valid_{k}": v for k, v in valid_log.items()}
+                        wandb_valid_stats["epoch"] = cur_epoch
+                        self.wandb_log(wandb_valid_stats, step=cur_epoch)
 
             self.save_checkpoint(cur_epoch, is_best=False)
 
@@ -348,3 +369,78 @@ class Runner:
         )
         logging.info("Saving checkpoint at epoch {} to {}.".format(cur_epoch, save_to))
         torch.save(save_obj, save_to)
+
+    @main_process  
+    def init_wandb(self):
+        """Initialize Weights & Biases logging and upload dataset information."""
+        # Initialize wandb
+        wandb.init(
+            project=self.config.config.run.get("wandb_project", "salmonn-training"),
+            name=self.config.config.run.get("wandb_run_name", None),
+            config=self.config.to_dict(),
+            tags=self.config.config.run.get("wandb_tags", ["salmonn", "audio-language-model"])
+        )
+        
+        # Log dataset statistics
+        self.log_dataset_info()
+        
+        logging.info("Wandb initialized successfully")
+
+    @main_process
+    def log_dataset_info(self):
+        """Log training and test dataset information to wandb."""
+        try:
+            # Create dataset artifacts and log metadata
+            for split_name, dataset in self.datasets.items():
+                # Log dataset size
+                dataset_size = len(dataset)
+                wandb.log({f"dataset_{split_name}_size": dataset_size})
+                
+                # Sample a few examples for visualization
+                sample_data = []
+                num_samples = min(10, dataset_size)  # Log up to 10 samples
+                
+                for i in range(num_samples):
+                    try:
+                        sample = dataset[i]
+                        sample_info = {
+                            "id": sample.get("id", f"{split_name}_sample_{i}"),
+                            "text": sample.get("text", ""),
+                            "task": sample.get("task", "asr"),
+                            "Q": sample.get("Q", ""),
+                            "audio_path": sample.get("id", "")  # Using id as audio path
+                        }
+                        sample_data.append(sample_info)
+                    except Exception as e:
+                        logging.warning(f"Error sampling {split_name} dataset at index {i}: {e}")
+                        continue
+                
+                # Create wandb table for dataset samples
+                if sample_data:
+                    columns = ["id", "text", "task", "Q", "audio_path"]
+                    table = wandb.Table(columns=columns)
+                    
+                    for sample in sample_data:
+                        table.add_data(
+                            sample["id"],
+                            sample["text"],
+                            sample["task"], 
+                            sample["Q"],
+                            sample["audio_path"]
+                        )
+                    
+                    wandb.log({f"{split_name}_dataset_samples": table})
+                
+                logging.info(f"Logged {len(sample_data)} samples from {split_name} dataset to wandb")
+                
+        except Exception as e:
+            logging.warning(f"Error logging dataset info to wandb: {e}")
+
+    @main_process
+    def wandb_log(self, log_dict, step=None):
+        """Log metrics to wandb if enabled."""
+        if self.use_wandb:
+            try:
+                wandb.log(log_dict, step=step)
+            except Exception as e:
+                logging.warning(f"Error logging to wandb: {e}")
