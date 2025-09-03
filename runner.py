@@ -195,12 +195,18 @@ class Runner:
             loss = forward_result.get("loss", 0)
             correct = forward_result.get("correct", 0)
             total = forward_result.get("total", 1)
+            
+            # Convert to float if tensor
+            loss_value = loss.item() if hasattr(loss, 'item') else float(loss)
+            correct_value = correct.item() if hasattr(correct, 'item') else float(correct)
+            total_value = total.item() if hasattr(total, 'item') else float(total)
+            
             res = {
                 "id": samples["id"],
                 "ground_truth": samples["text"],
-                "loss": loss.item(),
-                "acc": (correct / total).item(),
-                "total": total,
+                "loss": loss_value,
+                "acc": (correct_value / total_value) if total_value > 0 else 0.0,
+                "total": total_value,
             }
 
             if decode:
@@ -220,6 +226,19 @@ class Runner:
                 res["task"] = samples["task"]
 
             results.append(res)
+            
+            # Log validation loss step-by-step to wandb if enabled
+            if self.use_wandb and is_main_process():
+                # Create a step number for validation batches
+                batch_idx = len(results) - 1
+                val_step = epoch * len(dataloader) + batch_idx
+                val_wandb_metrics = {
+                    "valid_loss_step": loss_value,
+                    "valid_acc_step": (correct_value / total_value) if total_value > 0 else 0.0,
+                    "epoch": epoch
+                }
+                # Log without specific step to avoid conflicts
+                self.wandb_log(val_wandb_metrics)
 
         if is_dist_avail_and_initialized():
             dist.barrier()
