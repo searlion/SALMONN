@@ -1,0 +1,504 @@
+{
+    "annotation": [
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        },
+        {
+            "path": "/LibriSpeech/train-clean-100/103/1240/103-1240-0000.flac",
+            "text": "This path starts correctly.",
+            "task": "asr"
+        },
+        {
+            "path": "/OtherData/some_file.flac",
+            "text": "This path should be filtered out.",
+            "task": "asr"
+        }
+    ]
+}
