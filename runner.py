@@ -239,15 +239,18 @@ class Runner:
             
             # Log validation loss step-by-step to wandb if enabled
             if self.use_wandb and is_main_process():
-                # Create a step number for validation batches
+                # Create a proper step number that continues after training steps
                 batch_idx = len(results) - 1
-                val_step = epoch * len(dataloader) + batch_idx
+                # Calculate step that comes after all training steps for this epoch
+                training_steps_so_far = (epoch + 1) * self.iters_per_epoch
+                val_step = training_steps_so_far + 100 + batch_idx  # Offset by 100 to separate from epoch summary
                 val_wandb_metrics = {
-                    "valid_loss_step": loss_value,
-                    "epoch": epoch
+                    "valid_loss": loss_value,
+                    "epoch": epoch,
+                    "validation_batch": batch_idx
                 }
-                # Log without specific step to avoid conflicts
-                self.wandb_log(val_wandb_metrics)
+                # Log with step to maintain proper ordering
+                self.wandb_log(val_wandb_metrics, step=val_step)
 
         if is_dist_avail_and_initialized():
             dist.barrier()
@@ -360,8 +363,10 @@ class Runner:
                     # Log validation metrics to wandb
                     if self.use_wandb:
                         valid_global_step = (cur_epoch + 1) * self.iters_per_epoch + 1  # +1 to ensure it's after training
-                        wandb_valid_stats = {f"valid_{k}": v for k, v in valid_log.items()}
+                        wandb_valid_stats = {f"valid_{k}": float(v) if isinstance(v, (int, float)) else v for k, v in valid_log.items()}
                         wandb_valid_stats["epoch"] = cur_epoch
+                        logging.info(f"Debug - valid_log contents: {valid_log}")
+                        logging.info(f"Debug - wandb_valid_stats: {wandb_valid_stats}")
                         self.wandb_log(wandb_valid_stats, step=valid_global_step)
 
             self.save_checkpoint(cur_epoch, is_best=False)
