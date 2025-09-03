@@ -114,3 +114,5 @@ For the following errors:
 *  Missing `libstdc++.so.6` specifically `GLIBCXX_3.4.32`: `conda install -c conda-forge libstdcxx-ng`. Also remember to upgrade torchaudio to 2.3.0.
 
 Note that BEATS can simply point to the `*.pt` file itself. No need to extract it.
+
+Run `split_data.py` to split the annotations data into train, test and valid sets.

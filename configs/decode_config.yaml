@@ -14,9 +14,9 @@
 
 model:
   # paths
-  llama_path: "path to llama model"
-  whisper_path: "path to whisper model"
-  beats_path: "path to beats model"
+  llama_path: "/home/lewis/github/gemma3"
+  whisper_path: "/home/lewis/github/whisper-small"
+  beats_path: "/home/lewis/github/SALMONN_support/BEATs_iter3_plus_AS2M_finetuned_on_AS2M_cpt2.pt"
 
   ckpt: "model ckpt" # model used for decoding
 

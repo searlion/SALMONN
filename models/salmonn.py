@@ -188,19 +188,19 @@ class SALMONN(nn.Module):
                 self.speech_query_tokens.requires_grad = False
                 logging.info("freeze Speech QFormer")
 
-            logging.info('Loading speech LLAMA proj')
+            logging.info('Loading speech Gemma3 proj')
             self.speech_llama_proj = nn.Linear(
                 self.speech_Qformer.config.hidden_size, self.llama_model.config.hidden_size
             )
             if speech_llama_proj_model:
-                logging.info("Loading speech LLAMA proj from {}".format(speech_llama_proj_model))
+                logging.info("Loading speech Gemma3 proj from {}".format(speech_llama_proj_model))
                 speech_llama_proj_weight = torch.load(speech_llama_proj_model, map_location="cpu")
                 self.load_state_dict(speech_llama_proj_weight['model'], strict=False)
             if freeze_speech_llama_proj:
                 for name, param in self.speech_llama_proj.named_parameters():
                     param.requires_grad = False
                 self.speech_llama_proj.eval()
-                logging.info("freeze speech LLAMA proj")
+                logging.info("freeze speech Gemma3 proj")
         else:
             # feel free to add other aligners here
             raise NotImplementedError

@@ -48,9 +48,9 @@ model:
   end_sym: "</s>"
 
 datasets:
-  train_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/salmonn_stage1_data.json"
-  valid_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/salmonn_stage2_data.json"
-  test_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/salmonn_stage3_data.json"
+  train_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/stage1/train.json"
+  valid_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/stage1/valid.json"
+  test_ann_path: "/home/lewis/github/SALMONN_support/salmonn_data/salmonn_data/stage1/test.json"
 
   whisper_path: "/home/lewis/github/whisper-small"
 
