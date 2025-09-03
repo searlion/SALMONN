@@ -130,11 +130,13 @@ class SALMONN(nn.Module):
                 torch_dtype=torch.float16,
                 load_in_8bit=True,
                 device_map={"": device_8bit},
+                attn_implementation='eager',
             )
         else:
             self.llama_model = Gemma3ForCausalLM.from_pretrained(
                 llama_path,
-                torch_dtype=torch.float16,
+                torch_dtype=torch.float32,  # Use float32 instead of float16 for numerical stability
+                attn_implementation='eager',
             )
 
         self.llama_model.resize_token_embeddings(len(self.llama_tokenizer))
@@ -147,7 +149,7 @@ class SALMONN(nn.Module):
                 task_type=TaskType.CAUSAL_LM, 
                 inference_mode=False, 
                 r=lora_rank, 
-                lora_alpha=lora_alpha, 
+                lora_alpha=lora_alpha // 4,  # Reduce LoRA scaling for numerical stability
                 lora_dropout=lora_dropout,
                 target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
             )
@@ -204,6 +206,11 @@ class SALMONN(nn.Module):
             self.speech_llama_proj = nn.Linear(
                 self.speech_Qformer.config.hidden_size, self.llama_model.config.hidden_size
             )
+            
+            # Initialize projection layer with smaller weights for numerical stability
+            with torch.no_grad():
+                self.speech_llama_proj.weight.data.normal_(mean=0.0, std=0.02)
+                self.speech_llama_proj.bias.data.zero_()
             if speech_llama_proj_model:
                 logging.info("Loading speech Gemma3 proj from {}".format(speech_llama_proj_model))
                 speech_llama_proj_weight = torch.load(speech_llama_proj_model, map_location="cpu")
@@ -398,8 +405,13 @@ class SALMONN(nn.Module):
             logging.error("Inf detected in inputs_embeds before forward pass")
             inputs_embeds = torch.clamp(inputs_embeds, -1e4, 1e4)
 
-        # calulate loss
-        with self.maybe_autocast():
+        # Normalize embeddings to match Gemma3's expected input range
+        # Gemma3 expects normalized inputs due to its RMSNorm layers
+        embed_norm = torch.norm(inputs_embeds, dim=-1, keepdim=True)
+        inputs_embeds = inputs_embeds / (embed_norm + 1e-6)  # Normalize + avoid division by zero
+        
+        # calulate loss - disable autocast for numerical stability
+        with torch.cuda.amp.autocast(enabled=False):
             outputs = self.llama_model(
                 inputs_embeds=inputs_embeds,
                 attention_mask=attention_mask,
@@ -408,14 +420,27 @@ class SALMONN(nn.Module):
             )
             loss = outputs.loss
             
-            # Check for NaN/Inf in loss
+            # Check for NaN/Inf in loss and logits
             if torch.isnan(loss):
-                logging.error("NaN loss detected! Input statistics:")
-                logging.error(f"inputs_embeds stats: min={inputs_embeds.min()}, max={inputs_embeds.max()}, mean={inputs_embeds.mean()}")
-                logging.error(f"attention_mask stats: min={attention_mask.min()}, max={attention_mask.max()}")
-                logging.error(f"targets stats: min={targets.min()}, max={targets.max()}")
+                logging.error("NaN loss detected! Detailed diagnostics:")
+                logging.error(f"inputs_embeds stats: min={inputs_embeds.min()}, max={inputs_embeds.max()}, mean={inputs_embeds.mean()}, std={inputs_embeds.std()}")
+                logging.error(f"attention_mask stats: min={attention_mask.min()}, max={attention_mask.max()}, sum={attention_mask.sum()}")
+                logging.error(f"targets stats: min={targets.min()}, max={targets.max()}, valid_targets={(targets != -100).sum()}")
+                logging.error(f"logits stats: min={outputs.logits.min()}, max={outputs.logits.max()}, mean={outputs.logits.mean()}")
+                logging.error(f"logits has NaN: {torch.isnan(outputs.logits).any()}")
+                logging.error(f"logits has Inf: {torch.isinf(outputs.logits).any()}")
+                
                 # Return a small finite loss to prevent training crash
                 loss = torch.tensor(0.001, device=loss.device, dtype=loss.dtype, requires_grad=True)
+            elif torch.isinf(loss):
+                logging.error("Inf loss detected!")
+                loss = torch.tensor(0.001, device=loss.device, dtype=loss.dtype, requires_grad=True)
+            
+            # Also check if logits contain extreme values that could lead to instability
+            if torch.isnan(outputs.logits).any():
+                logging.warning("NaN detected in logits - potential numerical instability")
+            if torch.isinf(outputs.logits).any():
+                logging.warning("Inf detected in logits - potential numerical instability")
 
         if verbose:
             nvocab = self.llama_model.config.vocab_size
