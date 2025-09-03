@@ -128,9 +128,12 @@ class Runner:
 
             if (i + 1) % self.config.config.run.accum_grad_iters == 0:
                 if self.use_amp:
+                    self.scaler.unscale_(self.optimizer)
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.config.run.optims.get("max_grad_norm", 1.0))
                     self.scaler.step(self.optimizer)
                     self.scaler.update()
                 else:
+                    torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.config.run.optims.get("max_grad_norm", 1.0))
                     self.optimizer.step()
                 self.optimizer.zero_grad()
 

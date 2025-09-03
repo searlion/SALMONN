@@ -70,7 +70,7 @@ run:
 
   device: "cuda"
   use_distributed: True
-  amp: True
+  amp: False
   world_size: 1
   dist_url: "env://"
 
@@ -79,7 +79,7 @@ run:
     max_epoch: 30
     warmup_steps: 3000
     warmup_start_lr: 1e-6
-    init_lr: 3e-5
+    init_lr: 3e-6
     min_lr: 1e-5
     weight_decay: 0.05
     beta2: 0.999

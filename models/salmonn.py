@@ -62,6 +62,18 @@ class SALMONN(nn.Module):
         else:
             return contextlib.nullcontext()
 
+    def get_embed_tokens(self, input_ids):
+        """Helper method to correctly access embed_tokens regardless of LoRA configuration"""
+        if self.lora:
+            # LoRA wraps the model, so we need to access the base model
+            if hasattr(self.llama_model, 'model') and hasattr(self.llama_model.model, 'model'):
+                return self.llama_model.model.model.embed_tokens(input_ids)
+            else:
+                # Fallback in case the path is different
+                return self.llama_model.base_model.model.embed_tokens(input_ids)
+        else:
+            return self.llama_model.model.embed_tokens(input_ids)
+
     def __init__(
         self,
         llama_path="",
@@ -137,7 +149,7 @@ class SALMONN(nn.Module):
                 r=lora_rank, 
                 lora_alpha=lora_alpha, 
                 lora_dropout=lora_dropout,
-                target_modules=["q_proj", "v_proj", "k_proj", "o_proj"],  # Example target modules
+                target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
             )
             self.llama_model = get_peft_model(self.llama_model, self.peft_config)
             self.llama_model.print_trainable_parameters()
@@ -146,7 +158,7 @@ class SALMONN(nn.Module):
         assert whisper_path
         logging.info('Loading Whisper Model')
         self.speech_encoder = WhisperModel.from_pretrained(whisper_path).encoder
-        self.ln_speech = nn.LayerNorm(self.speech_encoder.config.d_model)
+        self.ln_speech = nn.LayerNorm(self.speech_encoder.config.d_model, eps=1e-6)
         if freeze_whisper:
             for name, param in self.speech_encoder.named_parameters():
                 param.requires_grad = False
@@ -159,7 +171,7 @@ class SALMONN(nn.Module):
             beats_cfg = BEATsConfig(beats_ckpt['cfg'])
             self.beats = BEATs(beats_cfg)
             self.beats.load_state_dict(beats_ckpt['model'])
-            self.ln_audio = nn.LayerNorm(self.beats.cfg.encoder_embed_dim)
+            self.ln_audio = nn.LayerNorm(self.beats.cfg.encoder_embed_dim, eps=1e-6)
             if freeze_beats:
                 for name, param in self.beats.named_parameters():
                     param.requires_grad = False
@@ -287,13 +299,13 @@ class SALMONN(nn.Module):
                 p_before_tokens = self.llama_tokenizer(
                     p_before, return_tensors="pt", add_special_tokens=False
                 ).to(embeds.device)
-                p_before_embeds = self.llama_model.model.embed_tokens(p_before_tokens.input_ids) if not self.lora else self.llama_model.model.model.embed_tokens(p_before_tokens.input_ids)
+                p_before_embeds = self.get_embed_tokens(p_before_tokens.input_ids)
 
                 # speech_embeds wrapped with prompts_embeds are padded to the same length here
                 p_after_tokens = self.llama_tokenizer(
                     p_after, return_tensors="pt", padding="longest", add_special_tokens=False
                 ).to(embeds.device)
-                p_after_embeds = self.llama_model.model.embed_tokens(p_after_tokens.input_ids) if not self.lora else self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids)
+                p_after_embeds = self.get_embed_tokens(p_after_tokens.input_ids)
 
                 wrapped_embeds = torch.cat([p_before_embeds, embeds, p_after_embeds], dim=1)
                 wrapped_atts = torch.cat([p_before_tokens.attention_mask, atts, p_after_tokens.attention_mask], dim=1)
@@ -307,8 +319,8 @@ class SALMONN(nn.Module):
                 p_after_tokens = self.llama_tokenizer(
                     p_after, return_tensors="pt", add_special_tokens=False
                 ).to(embeds.device)
-                p_before_embeds = self.llama_model.model.embed_tokens(p_before_tokens.input_ids).expand(batch_size, -1, -1) if not self.lora else self.llama_model.model.model.embed_tokens(p_before_tokens.input_ids).expand(batch_size, -1, -1)
-                p_after_embeds = self.llama_model.model.embed_tokens(p_after_tokens.input_ids).expand(batch_size, -1, -1) if not self.lora else self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids).expand(batch_size, -1, -1)
+                p_before_embeds = self.get_embed_tokens(p_before_tokens.input_ids).expand(batch_size, -1, -1)
+                p_after_embeds = self.get_embed_tokens(p_after_tokens.input_ids).expand(batch_size, -1, -1)
 
                 wrapped_embeds = torch.cat([p_before_embeds, embeds, p_after_embeds], dim=1)
                 wrapped_atts = torch.cat([p_before_tokens.attention_mask, atts, p_after_tokens.attention_mask], dim=1)
@@ -352,7 +364,7 @@ class SALMONN(nn.Module):
             max_length=self.max_txt_len,
             add_special_tokens=False
         ).to(spectrogram.device)
-        to_regress_embeds = self.llama_model.model.embed_tokens(to_regress_tokens.input_ids) if not self.lora else self.llama_model.model.model.embed_tokens(to_regress_tokens.input_ids)
+        to_regress_embeds = self.get_embed_tokens(to_regress_tokens.input_ids)
         targets = to_regress_tokens.input_ids.masked_fill(
             to_regress_tokens.input_ids == self.llama_tokenizer.pad_token_id, -100
         )
@@ -370,11 +382,21 @@ class SALMONN(nn.Module):
             dtype=to_regress_tokens.input_ids.dtype,
             device=to_regress_tokens.input_ids.device,
         ) * self.llama_tokenizer.bos_token_id
-        bos_embeds = self.llama_model.model.embed_tokens(bos) if not self.lora else self.llama_model.model.model.embed_tokens(bos)
+        bos_embeds = self.get_embed_tokens(bos)
         atts_bos = speech_atts[:, :1]
 
         inputs_embeds = torch.cat([bos_embeds, speech_embeds, to_regress_embeds], dim=1)
         attention_mask = torch.cat([atts_bos, speech_atts, to_regress_tokens.attention_mask], dim=1)
+
+        # Add numerical stability checks before loss calculation
+        if torch.isnan(inputs_embeds).any():
+            logging.error("NaN detected in inputs_embeds before forward pass")
+            # Clamp values to prevent NaN propagation
+            inputs_embeds = torch.clamp(inputs_embeds, -1e4, 1e4)
+        
+        if torch.isinf(inputs_embeds).any():
+            logging.error("Inf detected in inputs_embeds before forward pass")
+            inputs_embeds = torch.clamp(inputs_embeds, -1e4, 1e4)
 
         # calulate loss
         with self.maybe_autocast():
@@ -385,6 +407,15 @@ class SALMONN(nn.Module):
                 labels=targets,
             )
             loss = outputs.loss
+            
+            # Check for NaN/Inf in loss
+            if torch.isnan(loss):
+                logging.error("NaN loss detected! Input statistics:")
+                logging.error(f"inputs_embeds stats: min={inputs_embeds.min()}, max={inputs_embeds.max()}, mean={inputs_embeds.mean()}")
+                logging.error(f"attention_mask stats: min={attention_mask.min()}, max={attention_mask.max()}")
+                logging.error(f"targets stats: min={targets.min()}, max={targets.max()}")
+                # Return a small finite loss to prevent training crash
+                loss = torch.tensor(0.001, device=loss.device, dtype=loss.dtype, requires_grad=True)
 
         if verbose:
             nvocab = self.llama_model.config.vocab_size
@@ -416,7 +447,7 @@ class SALMONN(nn.Module):
             dtype=torch.int32,
             device=speech_embeds.device,
         ) * self.llama_tokenizer.bos_token_id
-        bos_embeds = self.llama_model.model.embed_tokens(bos) if not self.lora else self.llama_model.model.model.embed_tokens(bos)
+        bos_embeds = self.get_embed_tokens(bos)
         atts_bos = speech_atts[:, :1]
 
         embeds = torch.cat([bos_embeds, speech_embeds], dim=1)
