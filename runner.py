@@ -309,9 +309,10 @@ class Runner:
             
             # Log to wandb
             if self.use_wandb and is_main_process():
+                train_global_step = (cur_epoch + 1) * self.iters_per_epoch
                 wandb_train_stats = {f"train_{k}": float(v) for k, v in train_stats.items()}
                 wandb_train_stats["epoch"] = cur_epoch
-                self.wandb_log(wandb_train_stats, step=cur_epoch)
+                self.wandb_log(wandb_train_stats, step=train_global_step)
 
             # validating phase
             logging.info("Validating Phase")
@@ -330,9 +331,10 @@ class Runner:
                     
                     # Log validation metrics to wandb
                     if self.use_wandb:
+                        valid_global_step = (cur_epoch + 1) * self.iters_per_epoch + 1  # +1 to ensure it's after training
                         wandb_valid_stats = {f"valid_{k}": v for k, v in valid_log.items()}
                         wandb_valid_stats["epoch"] = cur_epoch
-                        self.wandb_log(wandb_valid_stats, step=cur_epoch)
+                        self.wandb_log(wandb_valid_stats, step=valid_global_step)
 
             self.save_checkpoint(cur_epoch, is_best=False)
 
