@@ -168,3 +168,4 @@ arnold.sh
 /configs_local
 
 /output directory
+/wandb
