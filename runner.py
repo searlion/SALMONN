@@ -184,6 +184,7 @@ class Runner:
         assert dataloader is not None, "{}_loader does not exist.".format(split)
 
         metric_logger = MetricLogger(delimiter="  ")
+        metric_logger.add_meter("loss", SmoothedValue(window_size=1, fmt="{value:.4f}"))
         header = "Eval: data epoch: [{}]".format(epoch)
 
         results = []
@@ -200,6 +201,12 @@ class Runner:
             loss_value = loss.item() if hasattr(loss, 'item') else float(loss)
             correct_value = correct.item() if hasattr(correct, 'item') else float(correct)
             total_value = total.item() if hasattr(total, 'item') else float(total)
+            
+            # Debug: log what we're getting from the model
+            if len(results) == 0:  # Only log for first batch
+                logging.info(f"Debug - forward_result keys: {forward_result.keys() if hasattr(forward_result, 'keys') else 'not dict'}")
+                logging.info(f"Debug - loss: {loss}, correct: {correct}, total: {total}")
+                logging.info(f"Debug - converted values - loss: {loss_value}, correct: {correct_value}, total: {total_value}")
             
             res = {
                 "id": samples["id"],
@@ -227,6 +234,9 @@ class Runner:
 
             results.append(res)
             
+            # Update metric logger so values are printed
+            metric_logger.update(loss=loss_value)
+            
             # Log validation loss step-by-step to wandb if enabled
             if self.use_wandb and is_main_process():
                 # Create a step number for validation batches
@@ -234,7 +244,6 @@ class Runner:
                 val_step = epoch * len(dataloader) + batch_idx
                 val_wandb_metrics = {
                     "valid_loss_step": loss_value,
-                    "valid_acc_step": (correct_value / total_value) if total_value > 0 else 0.0,
                     "epoch": epoch
                 }
                 # Log without specific step to avoid conflicts
