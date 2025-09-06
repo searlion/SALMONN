@@ -135,7 +135,7 @@ class SALMONN(nn.Module):
         else:
             self.llama_model = Gemma3ForCausalLM.from_pretrained(
                 llama_path,
-                torch_dtype=torch.float32,  # Use float32 instead of float16 for numerical stability
+                torch_dtype=torch.float16,
                 attn_implementation='eager',
             )
 
