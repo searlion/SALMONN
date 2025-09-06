@@ -6,10 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="dd4dbd87-3f4a-4ac3-bd34-08d2f3233e00" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/config_with_wandb.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config_with_wandb.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/configs/decode_config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/decode_config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/salmonn.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/salmonn.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wandb/latest-run" beforeDir="false" afterPath="$PROJECT_DIR$/wandb/latest-run" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +127,7 @@
       <workItem from="1756780428966" duration="18338000" />
       <workItem from="1756813268638" duration="14746000" />
       <workItem from="1756876063653" duration="21228000" />
-      <workItem from="1756908026684" duration="16349000" />
+      <workItem from="1756908026684" duration="16545000" />
     </task>
     <servers />
   </component>

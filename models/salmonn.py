@@ -410,8 +410,8 @@ class SALMONN(nn.Module):
         embed_norm = torch.norm(inputs_embeds, dim=-1, keepdim=True)
         inputs_embeds = inputs_embeds / (embed_norm + 1e-6)  # Normalize + avoid division by zero
         
-        # calulate loss - disable autocast for numerical stability
-        with torch.cuda.amp.autocast(enabled=False):
+        # calulate loss
+        with self.maybe_autocast():
             outputs = self.llama_model(
                 inputs_embeds=inputs_embeds,
                 attention_mask=attention_mask,
