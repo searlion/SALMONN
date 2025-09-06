@@ -326,8 +326,8 @@ class SALMONN(nn.Module):
                 p_after_tokens = self.llama_tokenizer(
                     p_after, return_tensors="pt", add_special_tokens=False
                 ).to(embeds.device)
-                p_before_embeds = self.get_embed_tokens(p_before_tokens.input_ids).expand(batch_size, -1, -1)
-                p_after_embeds = self.get_embed_tokens(p_after_tokens.input_ids).expand(batch_size, -1, -1)
+                p_before_embeds = self.llama_model.model.embed_tokens(p_before_tokens.input_ids).expand(batch_size, -1, -1) if not self.lora else self.llama_model.model.model.embed_tokens(p_before_tokens.input_ids).expand(batch_size, -1, -1)
+                p_after_embeds = self.llama_model.model.embed_tokens(p_after_tokens.input_ids).expand(batch_size, -1, -1) if not self.lora else self.llama_model.model.model.embed_tokens(p_after_tokens.input_ids).expand(batch_size, -1, -1)
 
                 wrapped_embeds = torch.cat([p_before_embeds, embeds, p_after_embeds], dim=1)
                 wrapped_atts = torch.cat([p_before_tokens.attention_mask, atts, p_after_tokens.attention_mask], dim=1)
