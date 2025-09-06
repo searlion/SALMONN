@@ -160,7 +160,7 @@ class SALMONN(nn.Module):
         assert whisper_path
         logging.info('Loading Whisper Model')
         self.speech_encoder = WhisperModel.from_pretrained(whisper_path).encoder
-        self.ln_speech = nn.LayerNorm(self.speech_encoder.config.d_model, eps=1e-6)
+        self.ln_speech = nn.LayerNorm(self.speech_encoder.config.d_model)
         if freeze_whisper:
             for name, param in self.speech_encoder.named_parameters():
                 param.requires_grad = False
