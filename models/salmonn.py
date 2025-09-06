@@ -173,7 +173,7 @@ class SALMONN(nn.Module):
             beats_cfg = BEATsConfig(beats_ckpt['cfg'])
             self.beats = BEATs(beats_cfg)
             self.beats.load_state_dict(beats_ckpt['model'])
-            self.ln_audio = nn.LayerNorm(self.beats.cfg.encoder_embed_dim, eps=1e-6)
+            self.ln_audio = nn.LayerNorm(self.beats.cfg.encoder_embed_dim)
             if freeze_beats:
                 for name, param in self.beats.named_parameters():
                     param.requires_grad = False
@@ -206,11 +206,7 @@ class SALMONN(nn.Module):
             self.speech_llama_proj = nn.Linear(
                 self.speech_Qformer.config.hidden_size, self.llama_model.config.hidden_size
             )
-            
-            # Initialize projection layer with smaller weights for numerical stability
-            # with torch.no_grad():
-            #     self.speech_llama_proj.weight.data.normal_(mean=0.0, std=0.02)
-            #     self.speech_llama_proj.bias.data.zero_()
+
             if speech_llama_proj_model:
                 logging.info("Loading speech Gemma3 proj from {}".format(speech_llama_proj_model))
                 speech_llama_proj_weight = torch.load(speech_llama_proj_model, map_location="cpu")
