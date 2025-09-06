@@ -203,12 +203,12 @@ class Runner:
             loss = forward_result.get("loss", 0)
             correct = forward_result.get("correct", 0)
             total = forward_result.get("total", 1)
-            
+
             # Convert to float if tensor
             loss_value = loss.item() if hasattr(loss, 'item') else float(loss)
             correct_value = correct.item() if hasattr(correct, 'item') else float(correct)
             total_value = total.item() if hasattr(total, 'item') else float(total)
-            
+
             # Debug: log what we're getting from the model
             if len(results) == 0:  # Only log for first batch
                 logging.info(f"Debug - forward_result keys: {forward_result.keys() if hasattr(forward_result, 'keys') else 'not dict'}")
@@ -218,9 +218,9 @@ class Runner:
             res = {
                 "id": samples["id"],
                 "ground_truth": samples["text"],
-                "loss": loss_value,
-                "acc": (correct_value / total_value) if total_value > 0 else 0.0,
-                "total": total_value,
+                "loss": loss.item(),
+                "acc": (correct / total).item(),
+                "total": total,
             }
 
             if decode:
