@@ -149,7 +149,7 @@ class SALMONN(nn.Module):
                 task_type=TaskType.CAUSAL_LM, 
                 inference_mode=False, 
                 r=lora_rank, 
-                lora_alpha=lora_alpha // 4,  # Reduce LoRA scaling for numerical stability
+                lora_alpha=lora_alpha,
                 lora_dropout=lora_dropout,
                 target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
             )
