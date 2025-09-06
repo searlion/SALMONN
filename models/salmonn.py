@@ -136,7 +136,7 @@ class SALMONN(nn.Module):
             self.llama_model = Gemma3ForCausalLM.from_pretrained(
                 llama_path,
                 torch_dtype=torch.float16,
-                attn_implementation='eager',
+                attn_implementation='eager', # It is recommended to train Gemma3 models with the 'eager' attention implemenation isntead of sdpa
             )
 
         self.llama_model.resize_token_embeddings(len(self.llama_tokenizer))
