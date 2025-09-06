@@ -62,18 +62,6 @@ class SALMONN(nn.Module):
         else:
             return contextlib.nullcontext()
 
-    def get_embed_tokens(self, input_ids):
-        """Helper method to correctly access embed_tokens regardless of LoRA configuration"""
-        if self.lora:
-            # LoRA wraps the model, so we need to access the base model
-            if hasattr(self.llama_model, 'model') and hasattr(self.llama_model.model, 'model'):
-                return self.llama_model.model.model.embed_tokens(input_ids)
-            else:
-                # Fallback in case the path is different
-                return self.llama_model.base_model.model.embed_tokens(input_ids)
-        else:
-            return self.llama_model.model.embed_tokens(input_ids)
-
     def __init__(
         self,
         llama_path="",
