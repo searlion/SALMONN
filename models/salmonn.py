@@ -208,9 +208,9 @@ class SALMONN(nn.Module):
             )
             
             # Initialize projection layer with smaller weights for numerical stability
-            with torch.no_grad():
-                self.speech_llama_proj.weight.data.normal_(mean=0.0, std=0.02)
-                self.speech_llama_proj.bias.data.zero_()
+            # with torch.no_grad():
+            #     self.speech_llama_proj.weight.data.normal_(mean=0.0, std=0.02)
+            #     self.speech_llama_proj.bias.data.zero_()
             if speech_llama_proj_model:
                 logging.info("Loading speech Gemma3 proj from {}".format(speech_llama_proj_model))
                 speech_llama_proj_weight = torch.load(speech_llama_proj_model, map_location="cpu")
