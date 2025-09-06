@@ -371,7 +371,7 @@ class SALMONN(nn.Module):
             max_length=self.max_txt_len,
             add_special_tokens=False
         ).to(spectrogram.device)
-        to_regress_embeds = self.get_embed_tokens(to_regress_tokens.input_ids)
+        to_regress_embeds = self.llama_model.model.embed_tokens(to_regress_tokens.input_ids) if not self.lora else self.llama_model.model.model.embed_tokens(to_regress_tokens.input_ids)
         targets = to_regress_tokens.input_ids.masked_fill(
             to_regress_tokens.input_ids == self.llama_tokenizer.pad_token_id, -100
         )
