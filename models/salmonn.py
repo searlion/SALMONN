@@ -379,16 +379,6 @@ class SALMONN(nn.Module):
         inputs_embeds = torch.cat([bos_embeds, speech_embeds, to_regress_embeds], dim=1)
         attention_mask = torch.cat([atts_bos, speech_atts, to_regress_tokens.attention_mask], dim=1)
 
-        # Add numerical stability checks before loss calculation
-        if torch.isnan(inputs_embeds).any():
-            logging.error("NaN detected in inputs_embeds before forward pass")
-            # Clamp values to prevent NaN propagation
-            inputs_embeds = torch.clamp(inputs_embeds, -1e4, 1e4)
-        
-        if torch.isinf(inputs_embeds).any():
-            logging.error("Inf detected in inputs_embeds before forward pass")
-            inputs_embeds = torch.clamp(inputs_embeds, -1e4, 1e4)
-
         # Normalize embeddings to match Gemma3's expected input range
         # Gemma3 expects normalized inputs due to its RMSNorm layers
         embed_norm = torch.norm(inputs_embeds, dim=-1, keepdim=True)
