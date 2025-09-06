@@ -389,7 +389,7 @@ class SALMONN(nn.Module):
             dtype=to_regress_tokens.input_ids.dtype,
             device=to_regress_tokens.input_ids.device,
         ) * self.llama_tokenizer.bos_token_id
-        bos_embeds = self.get_embed_tokens(bos)
+        bos_embeds = self.llama_model.model.embed_tokens(bos) if not self.lora else self.llama_model.model.model.embed_tokens(bos)
         atts_bos = speech_atts[:, :1]
 
         inputs_embeds = torch.cat([bos_embeds, speech_embeds, to_regress_embeds], dim=1)

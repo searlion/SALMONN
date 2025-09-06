@@ -18,7 +18,8 @@ model:
   whisper_path: "/home/lewis/github/whisper-small"
   beats_path: "/home/lewis/github/SALMONN_support/BEATs_iter3_plus_AS2M_finetuned_on_AS2M_cpt2.pt"
 
-  ckpt: "model ckpt" # model used for decoding
+  ckpt: "/home/lewis/github/SALMONN/output directory/202509042303/checkpoint_20.pth" # model used for decoding
+#  ckpt: "" # model used for decoding
 
   freeze_whisper: True
   freeze_beats: True
@@ -50,7 +51,7 @@ model:
 generate:
   max_new_tokens: 200
   num_beams: 4
-  do_sample: False
+  do_sample: True
   min_length: 1
   temperature: 1.0
   top_p: 0.9

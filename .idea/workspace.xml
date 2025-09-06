@@ -7,7 +7,8 @@
     <list default="true" id="dd4dbd87-3f4a-4ac3-bd34-08d2f3233e00" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/configs/config_with_wandb.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/config_with_wandb.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/runner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configs/decode_config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configs/decode_config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/salmonn.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/salmonn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wandb/latest-run" beforeDir="false" afterPath="$PROJECT_DIR$/wandb/latest-run" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +46,7 @@
     "Python.train.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "claude-debug",
+    "git-widget-placeholder": "claude-debug-2",
     "last_opened_file_path": "/home/lewis/github/SALMONN",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -127,7 +128,8 @@
       <workItem from="1756718095456" duration="4599000" />
       <workItem from="1756780428966" duration="18338000" />
       <workItem from="1756813268638" duration="14746000" />
-      <workItem from="1756876063653" duration="18412000" />
+      <workItem from="1756876063653" duration="21228000" />
+      <workItem from="1756908026684" duration="16349000" />
     </task>
     <servers />
   </component>
@@ -162,11 +164,6 @@
           <url>file://$PROJECT_DIR$/utils.py</url>
           <line>120</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/runner.py</url>
-          <line>130</line>
-          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
